@@ -28,6 +28,14 @@ jobs:
           path: ~/.konan
           key: kotlin-native-compiler-${{ runner.OS }}
 
+      # At some point, the Android plugin started getting chatty with its output
+      # and spams stuff like "Install Android SDK ..."
+      # So we run the "printLineCoverage" command twice, one to clear away this
+      # first run noise.
+      - name: Run Gradle once to clear Android startup messages
+        run: |
+          ${{github.workspace}}/gradlew -q printLineCoverage
+
       - name: Generate coverage output
         run: |
           echo "COVERAGE=$(${{github.workspace}}/gradlew -q printLineCoverage)" >> $GITHUB_ENV
